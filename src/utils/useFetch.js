@@ -8,22 +8,22 @@ export const useFetch = (url) => {
   useEffect(() => {
     setLoading(true);
     const fetchingData = async () => {
-      const respose = await fetch(url);
-      if (!respose.ok) {
-        const msg = `Something went wrong! ${respose.status}`;
-        throw new Error(msg);
+      try {
+        const respose = await fetch(url);
+        if (!respose.ok) {
+          const msg = `Something went wrong! ${respose.status}`;
+          throw new Error(msg);
+        }
+        const resposeData = await respose.json();
+        setData(resposeData);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
       }
-      const resposeData = await respose.json();
-      setData(resposeData);
     };
 
-    fetchingData()
-      .catch((error) => {
-        setError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    fetchingData();
   }, [url]);
 
   return { data, loading, error };
